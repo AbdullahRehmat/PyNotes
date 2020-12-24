@@ -1,5 +1,10 @@
+# Developer: Abdullah Rehmat
 # Import Modules Here
 import os
+import time
+import webview
+import os.path
+import multiprocessing
 from dotenv import load_dotenv
 from flask_wtf import FlaskForm
 from flask_mde import Mde, MdeField
@@ -7,18 +12,14 @@ from wtforms import SubmitField, StringField
 from wtforms.validators import InputRequired, DataRequired, Length
 from flask import Flask, request, render_template, flash, session, url_for
 
-import time
-import multiprocessing
-import webview
-import os.path
 
 app = Flask(__name__)
 load_dotenv()
 mde = Mde(app)
-app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY")
 
-windowTitle = "PiNotes [MD]"
-fixedPath = '/home/rehmat/Documents/'
+windowTitle = os.environ.get("WINDOW_TITLE")
+fileDirPath = os.environ.get("FILE_DIRECTORY")
 
 
 def error_flasher(form):
@@ -29,25 +30,25 @@ def error_flasher(form):
 
 
 def fileHandler(form):
-    savePath = os.path.join(fixedPath, form.title.data)
+    savePath = os.path.join(fileDirPath, form.title.data)
     f = open(savePath, "w+")
     f.write(form.editor.data)
     f.close()
 
 
 def contentLoader(form):
-    savePath = os.path.join(fixedPath, form.title.data)
+    savePath = os.path.join(fileDirPath, form.title.data)
     fileName = savePath
     f = open(fileName, "r")
     return f.read()
 
 
 def startFlaskServer():
-    app.run()
+    app.run(debug=True)
 
 
 def startWebview():
-    webview.create_window('My Web App', 'http://localhost:5000')
+    webview.create_window(windowTitle, 'http://localhost:5000')
     webview.start()
 
 
