@@ -22,6 +22,7 @@ PiNotes is an open source Python based WYSIWYG Markdown editor.
 User must have Pipenv installed to access virtual environment.  
 Change `SECRET_KEY` and `FILE_DIRECTORY` values in the `.env` file alongside other settings if required.
 
+`pipenv update`
 `pipenv shell`  
 `python3 app.py`
   
