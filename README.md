@@ -29,6 +29,10 @@ Change `SECRET_KEY` and `FILE_DIRECTORY` values in the `.env` file alongside oth
 - To create a new file, enter file name and contents. Click "Submit"
 - To open & modify an existing file enter just the name of the file e.g. `test.md`
 
+## Misc
+
+`testing.py` is a live testing version of `app.py` and should not be used!
+
 ## Dependencies
 - `Flask`
 - `Flask-WTF`
