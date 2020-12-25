@@ -1,18 +1,16 @@
 # Developer: Abdullah Rehmat
 # Import Modules Here
 import os
-import sys
 import time
 import webview
 import os.path
-import threading
+import multiprocessing
 from dotenv import load_dotenv
 from flask_wtf import FlaskForm
 from flask_mde import Mde, MdeField
 from wtforms import SubmitField, StringField
 from wtforms.validators import InputRequired, DataRequired, Length
 from flask import Flask, request, render_template, flash, session, url_for
-
 
 app = Flask(__name__)
 load_dotenv()
@@ -50,6 +48,7 @@ class MdeForm(FlaskForm):
 
     editor = MdeField(
         validators=[
+            #InputRequired("Input required"),
             Length(min=0, max=30000)
         ]
     )
@@ -69,19 +68,28 @@ def index():
         form.title.data = ""
         form.editor.data = ""
 
-    return render_template("index.html", form=form, windowTitle=windowTitle)
+    return render_template("index.html", form=form) #, windowTitle=windowTitle)
 
 
-def start_server():
-    app.run(host='0.0.0.0', port=5000)
+time.sleep(2)
+
+
+def startFlaskServer():
+    app.run(debug=True)
+
+
+def startWebview():
+    webview.create_window("windowTitle", 'http://localhost:5000')
+    webview.start(debug=True)
 
 
 if __name__ == "__main__":
 
-    t = threading.Thread(target=start_server)
-    t.daemon = True
-    t.start()
+    p1 = multiprocessing.Process(target=startFlaskServer)
+    p2 = multiprocessing.Process(target=startWebview)
 
-    webview.create_window(windowTitle, "http://localhost:5000/")
-    webview.start()
-    sys.exit()
+    p1.start()
+    #time.sleep(2)
+    p2.start()
+    #p2.join()
+    #p1.terminate()
