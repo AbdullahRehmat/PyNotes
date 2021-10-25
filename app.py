@@ -24,64 +24,64 @@ fileDirPath = os.environ.get("FILE_DIRECTORY")
 
 
 def error_flasher(form):
-    for field, message_list in form.errors.items():
-        for message in message_list:
-            flash(form[field].label.text + ': ' + message, 'error')
-    print(message, message_list)
+	for field, message_list in form.errors.items():
+		for message in message_list:
+			flash(form[field].label.text + ': ' + message, 'error')
+	print(message, message_list)
 
 
 def fileHandler(form):
-    savePath = os.path.join(fileDirPath, form.title.data)
-    f = open(savePath, "w+")
-    f.write(form.editor.data)
-    f.close()
+	savePath = os.path.join(fileDirPath, form.title.data)
+	f = open(savePath, "w+")
+	f.write(form.editor.data)
+	f.close()
 
 
 def contentLoader(form):
-    savePath = os.path.join(fileDirPath, form.title.data)
-    fileName = savePath
-    f = open(fileName, "r")
-    return f.read()
+	savePath = os.path.join(fileDirPath, form.title.data)
+	fileName = savePath
+	f = open(fileName, "r")
+	return f.read()
 
 
 class MdeForm(FlaskForm):
 
-    title = StringField('Title', validators=[DataRequired()])
+	title = StringField('Title', validators=[DataRequired()])
 
-    editor = MdeField(
-        validators=[
-            Length(min=0, max=30000)
-        ]
-    )
-    submit = SubmitField()
+	editor = MdeField(
+		validators=[
+			Length(min=0, max=30000)
+		]
+	)
+	submit = SubmitField()
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = MdeForm()
+	form = MdeForm()
 
-    if form.validate_on_submit() and form.editor.data == "":
-        form.editor.data = contentLoader(form)
+	if form.validate_on_submit() and form.editor.data == "":
+		form.editor.data = contentLoader(form)
 
-    elif form.validate_on_submit() and form.editor.data != "":
-        session['editor'] = request.form['editor']
-        fileHandler(form)
-        form.title.data = ""
-        form.editor.data = ""
+	elif form.validate_on_submit() and form.editor.data != "":
+		session['editor'] = request.form['editor']
+		fileHandler(form)
+		form.title.data = ""
+		form.editor.data = ""
 
-    return render_template("index.html", form=form, windowTitle=windowTitle)
+	return render_template("index.html", form=form, windowTitle=windowTitle)
 
 
 def start_server():
-    app.run(host='0.0.0.0', port=5000)
+	app.run(host='0.0.0.0', port=5000)
 
 
 if __name__ == "__main__":
 
-    t = threading.Thread(target=start_server)
-    t.daemon = True
-    t.start()
+	t = threading.Thread(target=start_server)
+	t.daemon = True
+	t.start()
 
-    webview.create_window(windowTitle, "http://localhost:5000/")
-    webview.start()
-    sys.exit()
+	webview.create_window(windowTitle, "http://localhost:5000/")
+	webview.start()
+	sys.exit()
